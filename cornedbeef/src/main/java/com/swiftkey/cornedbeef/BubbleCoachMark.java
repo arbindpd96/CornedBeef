@@ -160,7 +160,7 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
         
         public BubbleCoachMarkBuilder(Context context, View anchor, String message) {
             super(context, anchor, message);
-            bubbleColor = CoachMarkUtils.resolveColor(context, R.color.default_colour);
+            bubbleColor = CoachMarkUtils.resolveColor(context,R.color.white);
         }
 
         public BubbleCoachMarkBuilder(Context context, View anchor, View content) {
