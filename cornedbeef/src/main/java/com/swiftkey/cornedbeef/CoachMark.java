@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -496,6 +498,50 @@ public abstract class CoachMark {
             } else {
                 throw new IllegalStateException(
                         "Can't set a text color in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextSize(float size){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setTextSize(size);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text size in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextFont(Typeface font){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setTypeface(font);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text font in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextGravity(int gravity){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setGravity(gravity);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text gravity in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setSpannableText(String message){
+            if (this.content instanceof TextView) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    ((TextView) this.content).setText(Html.fromHtml(message,Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    ((TextView) this.content).setText(Html.fromHtml(message));
+                }
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a spannable text in a CoachMark whose content is not a TextView");
             }
         }
 
