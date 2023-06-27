@@ -63,7 +63,7 @@ public class BubbleCoachMarkTestCase {
         getInstrumentation().waitForIdleSync();
         waitUntilStatusBarHidden(mActivity);
         
-        mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(mActivity, mAnchor, "spam spam spam").build();
+        mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(mActivity, mAnchor, "spam spam spam",R.color.white).build();
     }
 
     @After
@@ -144,7 +144,7 @@ public class BubbleCoachMarkTestCase {
         final View topArrow;
         final View bottomArrow;
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                mActivity, mAnchor, "spam spam spam")
+                mActivity, mAnchor, "spam spam spam",R.color.white)
                 .setShowBelowAnchor(true)
                 .build();
 
@@ -177,7 +177,7 @@ public class BubbleCoachMarkTestCase {
     @Test
     public void testShowPopupTargetLeft() {
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                mActivity, mAnchor, "spam spam spam").setTargetOffset(0.25f).build();
+                mActivity, mAnchor, "spam spam spam",R.color.white).setTargetOffset(0.25f).build();
         
         showCoachMark(getInstrumentation(), mCoachMark);
         
@@ -194,7 +194,7 @@ public class BubbleCoachMarkTestCase {
     @Test
     public void testShowPopupTargetRight() {
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                mActivity, mAnchor, "spam spam spam").setTargetOffset(0.75f).build();
+                mActivity, mAnchor, "spam spam spam",R.color.white).setTargetOffset(0.75f).build();
         
         showCoachMark(getInstrumentation(), mCoachMark);
         
@@ -285,7 +285,7 @@ public class BubbleCoachMarkTestCase {
                 mAnchor,
                 "This is a long message. We're using it to verify that when the popup content is" + 
                 " wrapped over multiple lines, the popup is still positioned above the anchor." + 
-                "Here is some more text to make sure that this the text spans multiple lines").build();
+                "Here is some more text to make sure that this the text spans multiple lines",R.color.white).build();
   
         moveAnchor(getInstrumentation(), mAnchor, 0, 600);
         showCoachMark(getInstrumentation(), mCoachMark);
@@ -311,7 +311,7 @@ public class BubbleCoachMarkTestCase {
         int[] anchorPos = new int[2];
         int[] contentPos = new int[2];
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                mActivity, mAnchor, "spam spam spam")
+                mActivity, mAnchor, "spam spam spam",R.color.white)
                 .setInternalAnchor(0.25f, 0.5f, 0.5f, 0.5f).build();
 
         moveAnchor(getInstrumentation(), mAnchor, 0, 200);
@@ -341,7 +341,7 @@ public class BubbleCoachMarkTestCase {
         int[] anchorPos = new int[2];
         int[] contentPos = new int[2];
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                mActivity, mAnchor, "spam spam spam")
+                mActivity, mAnchor, "spam spam spam",R.color.white)
                 .setTargetOffset(0.25f)
                 .setInternalAnchor(0.5f, 0.5f, 0.5f, 0.5f)
                 .build();
@@ -371,7 +371,7 @@ public class BubbleCoachMarkTestCase {
                 mAnchor, 
                 "This is a long coach mark, to which padding will be applied." +
                 "For testing purposes it is important that this coach mark is" +
-                " wider than the width of the screen, otherwise this will fail")
+                " wider than the width of the screen, otherwise this will fail",R.color.white)
                 .setPadding(10).build();
         
         showCoachMark(getInstrumentation(), mCoachMark);
@@ -395,7 +395,7 @@ public class BubbleCoachMarkTestCase {
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
                 mActivity,
                 mAnchor,
-                "spam spam spam")
+                "spam spam spam",R.color.white)
                 .setBubbleColor(color)
                 .build();
 
@@ -422,7 +422,7 @@ public class BubbleCoachMarkTestCase {
         mCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
                 mActivity,
                 mAnchor,
-                "spam spam spam")
+                "spam spam spam",R.color.white)
                 .setTextColor(color)
                 .build();
 

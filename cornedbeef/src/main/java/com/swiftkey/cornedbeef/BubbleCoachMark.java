@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.RequiresApi;
 
 /**
@@ -27,12 +28,11 @@ import androidx.annotation.RequiresApi;
  * positioned off the side of the screen it is shifted left or right
  * accordingly. The pointy mark always points to the same location on the
  * anchor, regardless of the position of the speech bubble.
- * 
+ *
  * @author lachie
- * 
  */
 public class BubbleCoachMark extends InternallyAnchoredCoachMark {
-    
+
     private static final int MIN_ARROW_MARGIN = 10;
 
     private final float mTarget;
@@ -47,7 +47,7 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
 
     public BubbleCoachMark(BubbleCoachMarkBuilder builder) {
         super(builder);
-        
+
         mTarget = builder.target;
         mShowBelowAnchor = builder.showBelowAnchor;
         mMinArrowMargin = (int) mContext.getResources()
@@ -65,19 +65,19 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
             }
         }
     }
-    
+
     @Override
     protected View createContentView(View content) {
         // Inflate the coach mark layout and add the content
         View view = LayoutInflater.from(mContext).inflate(R.layout.bubble_coach_mark, null);
         mContentHolder = view.findViewById(R.id.coach_mark_content);
         mContentHolder.addView(content);
-        
+
         // Measure the coach mark to get the minimum width (constrained by screen width and padding) 
         final int maxWidth = mContext.getResources()
                 .getDisplayMetrics().widthPixels - 2 * mPadding;
         view.measure(View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST), 0);
-        
+
         mMinWidth = view.getMeasuredWidth();
         mTopArrow = view.findViewById(R.id.top_arrow);
         mBottomArrow = view.findViewById(R.id.bottom_arrow);
@@ -92,44 +92,44 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
 
         return view;
     }
-    
+
     @Override
     protected PopupWindow createNewPopupWindow(View contentView) {
         PopupWindow popup = new PopupWindow(
                 contentView,
-                LayoutParams.WRAP_CONTENT, 
+                LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
-        
+
         popup.setClippingEnabled(false); // We will handle clipping ourselves
         popup.setTouchInterceptor(new CoachMarkOnTouchListener());
         popup.setTouchable(true);
         return popup;
     }
-    
+
     @Override
     protected CoachMarkDimens<Integer> getPopupDimens(CoachMarkDimens<Integer> anchorDimens) {
         final int screenWidth = mDisplayFrame.width();
         final int screenHeight = mDisplayFrame.height();
-        
-        final int popupWidth = CoachMarkUtils.getPopupWidth(mArrowWidth, 
+
+        final int popupWidth = CoachMarkUtils.getPopupWidth(mArrowWidth,
                 screenWidth, mMinWidth, anchorDimens.width, mTarget);
-        
+
         final int popupHeight = getContentView().getMeasuredHeight();
-        
-        final Point popupPos = CoachMarkUtils.getPopupPosition(anchorDimens, popupWidth, 
+
+        final Point popupPos = CoachMarkUtils.getPopupPosition(anchorDimens, popupWidth,
                 popupHeight, screenWidth, screenHeight, mPadding, mShowBelowAnchor);
-        
+
         return new CoachMarkDimens<Integer>(popupPos.x, popupPos.y, popupWidth, popupHeight);
     }
-    
+
     @Override
     protected void updateView(CoachMarkDimens<Integer> popupDimens, CoachMarkDimens<Integer> anchorDimens) {
         int leftMargin;
         final View currentArrow;
-        final MarginLayoutParams params; 
-        
+        final MarginLayoutParams params;
+
         // Check if the popup is being shown above or below the anchor
-        if(popupDimens.getPos().y > anchorDimens.y) {
+        if (popupDimens.getPos().y > anchorDimens.y) {
             currentArrow = mTopArrow;
             mTopArrow.setVisibility(View.VISIBLE);
             mBottomArrow.setVisibility(View.GONE);
@@ -138,29 +138,30 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
             mBottomArrow.setVisibility(View.VISIBLE);
             mTopArrow.setVisibility(View.GONE);
         }
-        
+
         leftMargin = CoachMarkUtils.getArrowLeftMargin(mTarget,
                 anchorDimens.width, mArrowWidth, anchorDimens.x,
-                popupDimens.getPos().x, mMinArrowMargin, 
+                popupDimens.getPos().x, mMinArrowMargin,
                 popupDimens.width - mMinArrowMargin - mArrowWidth);
 
         params = (MarginLayoutParams) currentArrow.getLayoutParams();
-        if(leftMargin != params.leftMargin) {
+        if (leftMargin != params.leftMargin) {
             params.leftMargin = leftMargin;
             currentArrow.setLayoutParams(params);
-        }        
+        }
     }
-    
+
     public static class BubbleCoachMarkBuilder extends InternallyAnchoredCoachMarkBuilder {
 
         // Optional parameters with default values
         boolean showBelowAnchor = false;
         float target = 0.5f;
-        @ColorInt int bubbleColor;
-        
-        public BubbleCoachMarkBuilder(Context context, View anchor, String message) {
+        @ColorInt
+        int bubbleColor;
+
+        public BubbleCoachMarkBuilder(Context context, View anchor, String message, @ColorRes int backgroundColorRes) {
             super(context, anchor, message);
-            bubbleColor = CoachMarkUtils.resolveColor(context,R.color.white);
+            bubbleColor = CoachMarkUtils.resolveColor(context, backgroundColorRes);
         }
 
         public BubbleCoachMarkBuilder(Context context, View anchor, View content) {
@@ -170,26 +171,24 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
 
         public BubbleCoachMarkBuilder(Context context, View anchor, int contentResId) {
             super(context, anchor, contentResId);
-            bubbleColor = CoachMarkUtils.resolveColor(context, R.color.default_colour);
+            bubbleColor = CoachMarkUtils.resolveColor(context, R.color.white);
         }
-        
+
         /**
          * If possible, show this coach mark below the anchor rather than above
-         * 
-         * @param showBelowAnchor
-         *      true if this coach mark should be shown below the anchor, false otherwise
+         *
+         * @param showBelowAnchor true if this coach mark should be shown below the anchor, false otherwise
          */
         public BubbleCoachMarkBuilder setShowBelowAnchor(boolean showBelowAnchor) {
             this.showBelowAnchor = showBelowAnchor;
             return this;
         }
-        
+
         /**
          * Set the position of the pointy mark along the anchor
-         * 
-         * @param target
-         *      a value between 0 and 1 indicating the focal point of the
-         *      anchor (defaults to 0.5)
+         *
+         * @param target a value between 0 and 1 indicating the focal point of the
+         *               anchor (defaults to 0.5)
          */
         public BubbleCoachMarkBuilder setTargetOffset(float target) {
             this.target = target;
@@ -200,8 +199,7 @@ public class BubbleCoachMark extends InternallyAnchoredCoachMark {
          * Set the coach mark's bubble color.
          * It has no effect if called from APIs lower than Lollipop (21).
          *
-         * @param bubbleColor
-         *      new bubble color
+         * @param bubbleColor new bubble color
          */
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public BubbleCoachMarkBuilder setBubbleColor(@ColorInt int bubbleColor) {

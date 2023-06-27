@@ -2,7 +2,11 @@ package com.swiftkey.cornedbeef.test;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -40,10 +44,13 @@ public class SpamActivity extends Activity {
         final View anchorEmptyLinearLayout = findViewById(R.id.empty_anchor);
 
         mBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                context, anchorTextView, "This is a bubble coach mark!")
+                context, anchorTextView, "This is a bubble coach mark! This is a bubble coach mark! \n This is a bubble coach mark!",R.color.white)
                 .setTargetOffset(0.25f)
                 .setShowBelowAnchor(true)
                 .setPadding(10)
+                .setTextGravity(Gravity.START)
+                .setTextSize(20)
+                .setTextColor(getResources().getColor(R.color.default_colour))
                 .setOnShowListener(new CoachMark.OnShowListener() {
                     @Override
                     public void onShow() {
@@ -54,6 +61,12 @@ public class SpamActivity extends Activity {
                     @Override
                     public void onDismiss() {
                         Toast.makeText(context, "Bubble coach mark dismissed!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setOnClickListener(new CoachMark.OnClick() {
+                    @Override
+                    public void onClickEvent() {
+                        Toast.makeText(context, "Bubble coach mark clicked!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .build();

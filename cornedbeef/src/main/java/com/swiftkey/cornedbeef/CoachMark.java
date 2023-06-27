@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -61,6 +64,12 @@ public abstract class CoachMark {
         void onDismiss();
     }
 
+    public interface OnClick {
+        void onClickEvent();
+    }
+
+
+
     /**
      * Interface used to allow the creator of a coach mark to run some code when the
      * coach mark is shown.
@@ -91,6 +100,7 @@ public abstract class CoachMark {
 
     private final OnPreDrawListener mPreDrawListener;
     private final OnDismissListener mDismissListener;
+    private final OnClick mOnClick;
     private final OnShowListener mShowListener;
     private final OnAttachStateChangeListener mOnAttachStateChangeListener;
     private final OnTimeoutListener mTimeoutListener;
@@ -106,6 +116,7 @@ public abstract class CoachMark {
         mContext = builder.context;
         mTimeoutInMs = builder.timeout;
         mDismissListener = builder.dismissListener;
+        mOnClick = builder.mClickListener;
         mShowListener = builder.showListener;
         mTimeoutListener = builder.timeoutListener;
         mTokenView = builder.tokenView != null ? builder.tokenView : mAnchor;
@@ -192,6 +203,8 @@ public abstract class CoachMark {
         if (mShowListener != null) {
             mShowListener.onShow();
         }
+
+
         mAnchor.addOnAttachStateChangeListener(mOnAttachStateChangeListener);
     }
 
@@ -307,6 +320,9 @@ public abstract class CoachMark {
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
+               if(mOnClick != null) {
+                   mOnClick.onClickEvent();
+               }
                 dismiss();
             case MotionEvent.ACTION_DOWN:
                 return true;
@@ -369,6 +385,7 @@ public abstract class CoachMark {
         // Optional parameters with default values
         protected long timeout = 10000;
         protected OnDismissListener dismissListener;
+        protected OnClick mClickListener;
         protected int padding = 0;
         protected int animationStyle = R.style.CoachMarkAnimation;
         protected View tokenView;
@@ -439,6 +456,11 @@ public abstract class CoachMark {
             return this;
         }
 
+        public CoachMarkBuilder setOnClickListener(OnClick listener){
+           this.mClickListener = listener;
+            return this;
+        }
+
         /**
          * Set an {@link CoachMark.OnTimeoutListener} to be called when the
          * coach mark's display timeout has been expired
@@ -496,6 +518,50 @@ public abstract class CoachMark {
             } else {
                 throw new IllegalStateException(
                         "Can't set a text color in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextSize(float size){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setTextSize(size);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text size in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextFont(Typeface font){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setTypeface(font);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text font in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setTextGravity(int gravity){
+            if (this.content instanceof TextView) {
+                ((TextView) this.content).setGravity(gravity);
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a text gravity in a CoachMark whose content is not a TextView");
+            }
+        }
+
+        public CoachMarkBuilder setSpannableText(String message){
+            if (this.content instanceof TextView) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    ((TextView) this.content).setText(Html.fromHtml(message,Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    ((TextView) this.content).setText(Html.fromHtml(message));
+                }
+                return this;
+            } else {
+                throw new IllegalStateException(
+                        "Can't set a spannable text in a CoachMark whose content is not a TextView");
             }
         }
 
